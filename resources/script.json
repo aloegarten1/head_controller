@@ -1,0 +1,32 @@
+{
+    "addr": 4,
+    "msg0": {
+        "type": "describe",
+        "mid": 1,
+        "to_describe": ""
+    },
+    "msg1": {
+        "type": "call",
+        "mid": 1,
+        "to_call": "enable",
+        "args": []
+    },
+    "msg2": {
+        "type": "call",
+        "mid": 1,
+        "to_call": "pwm1",
+        "args": [255]
+    },
+    "msg3": {
+        "type": "call",
+        "mid": 1,
+        "to_call": "pwm2",
+        "args": [255]
+    },
+    "msg4": {
+        "type": "call",
+        "mid": 1,
+        "to_call": "mot2/go",
+        "args": [5000, 200, 40]
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "addr": 4,
+    "script": [
+        {
+            "message_type": "describe",
+            "message": 1,
+            "topic": ""
+        },
+        {
+            "type": "call",
+            "mid": 1,
+            "to_call": "enable",
+            "args": []
+        },
+        {
+            "type": "call",
+            "mid": 1,
+            "to_call": "mot1/go",
+            "args": [5000, 200, 40]
+        }
+    ]
+}
