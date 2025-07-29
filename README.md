@@ -9,11 +9,9 @@
 ## Description
 This project provides sending ITMP-messages to "head" device via serial port.
 
-The "head" device is capable of executing actions from a predefined list based on the command it receives through the serial port.
+The "head" device is capable of executing actions based on the commands it receives through the serial port.
 
-To send commands from a PC to the head module, ITMP messages of type CALL are used.
-
-According to the ITMP protocol specification, a command is triggered by sending a request in the following format:
+To send commands from a PC to the head module, ITMP messages of type CALL are used. According to the ITMP protocol specification, a command is triggered by sending a request in the following format:
 
 ```
 {
