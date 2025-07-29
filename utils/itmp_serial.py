@@ -1,5 +1,5 @@
 import cbor2
-from . import crc8,  hdlc_byte_stuff
+from . import crc8, hdlc_byte_stuff
 
 from enum import Enum
 
@@ -57,13 +57,15 @@ def build_itmp_hdlc_describe_packet(addr: int, message: int, topic: str) -> byte
 	return build_hdlc_from_itmp(addr, packet)
 
 
-def read_itmp_hdlc_packet(packet: bytes):
-	if not (packet[-1] == 0x7E):
+def read_itmp_hdlc_packet(packet: bytes) -> list:
+	if not (hex(packet[-1]) != 0x7E):
 		print("SOS")
 		return []
 	
-	packet = packet[:-1]
-	print(f"Address: {packet[0]}")
-	print(f"Message type: {packet[1]}")
-	print(f"Message ID: {packet[2]}")
-	print(f"Message: {packet[3:-1]}")
+	unstuffed = hdlc_byte_stuff.unstuff_bytes(packet[:-1])
+	if (crc8.crc8_get(unstuffed[:-1]) != unstuffed[-1]):
+		raise RuntimeError("CRC8 failed.")
+	
+	addr = unstuffed[0]
+	itmp_packet = cbor2.loads(unstuffed[1:-1])
+	return [addr, itmp_packet]

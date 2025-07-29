@@ -46,8 +46,9 @@ def poll(serial_port):
 
 def process_all_messages(port: serial.Serial, script: dict):
 	for message in script["script"]:
-		curr_msg = script[f"msg{i}"]
-		build_func = getattr(itmp_serial, f"build_itmp_hdlc_{curr_msg["type"]}_packet")
+		curr_msg = script[f"msg{0}"]
+		type = curr_msg["type"]
+		build_func = getattr(itmp_serial, f"build_itmp_hdlc_{type}_packet")
 		curr_msg.pop("type")
 		appendix = {"addr": script["addr"]}
 		curr_msg.update(appendix)
@@ -60,6 +61,8 @@ def process_all_messages(port: serial.Serial, script: dict):
 
 
 def main():
+	print(itmp_serial.build_hdlc_from_itmp(4, [itmp_serial.ITMPMessageType.DESCRIBE, 1, ""]))
+	print(itmp_serial.read_itmp_hdlc_packet(b'\x04\x83\x06\x01`\xf7~'))
 	script_path = "./resources/script.json"
 
 	print("Head controler launched.")
