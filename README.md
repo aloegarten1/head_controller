@@ -15,14 +15,14 @@ To send commands from a PC to the head module, ITMP messages of type CALL are us
 
 According to the ITMP protocol specification, a command is triggered by sending a request in the following format:
 
-'''
+```
 {
     "message_type": 8,
     "message": <message_number>,
     "procedure": <procedure_name>,
     "arguments": [<arguments list>]
 }
-'''
+```
 
 This message must be sent via the serial port to initiate the desired action on the head module.
 
