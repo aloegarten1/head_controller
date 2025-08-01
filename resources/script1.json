@@ -7,15 +7,15 @@
             "topic": ""
         },
         {
-            "type": "call",
-            "mid": 1,
-            "to_call": "enable",
+            "message_type": "call",
+            "message": 1,
+            "procedure": "enable",
             "args": []
         },
         {
-            "type": "call",
-            "mid": 1,
-            "to_call": "mot1/go",
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/go",
             "args": [5000, 200, 40]
         }
     ]

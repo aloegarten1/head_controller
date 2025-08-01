@@ -47,8 +47,8 @@ def build_hdlc_from_itmp(addr: int, packet: list):
 	return hdlc_byte_stuff.bytes2hdlc(serialized)
 
 
-def build_itmp_hdlc_call_packet(addr: int, message: int, procedure: str, arguments: list) -> bytes:
-	packet = [ITMPMessageType.CALL, message, procedure, arguments]
+def build_itmp_hdlc_call_packet(addr: int, message: int, procedure: str, args: list) -> bytes:
+	packet = [ITMPMessageType.CALL, message, procedure, args]
 	return build_hdlc_from_itmp(addr, packet)
 
 
@@ -64,7 +64,7 @@ def read_itmp_hdlc_packet(packet: bytes) -> list:
 	
 	unstuffed = hdlc_byte_stuff.unstuff_bytes(packet[:-1])
 	if (crc8.crc8_get(unstuffed[:-1]) != unstuffed[-1]):
-		raise RuntimeError("CRC8 failed.")
+		raise RuntimeError(f"CRC8 failed.\nPacket: {packet}\nUnstuffed: {unstuffed}\nCRC8: {unstuffed[-1]}, expected: {crc8.crc8_get(unstuffed[:-1])}")
 	
 	addr = unstuffed[0]
 	itmp_packet = cbor2.loads(unstuffed[1:-1])
