@@ -27,4 +27,5 @@ def crc8_get(data):
 
 	for i in range(len(data)):
 		crc = crc8_get_part(crc, data[i])
+	print(crc)
 	return crc

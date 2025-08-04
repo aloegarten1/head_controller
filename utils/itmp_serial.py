@@ -14,6 +14,7 @@ class ITMPMessageType(Enum):
 
 	# Description
 	DESCRIBE = 6
+	DESCRIPTION = 7
 
 	# RPC
 	CALL = 8
@@ -66,6 +67,25 @@ def read_itmp_hdlc_packet(packet: bytes) -> list:
 	if (crc8.crc8_get(unstuffed[:-1]) != unstuffed[-1]):
 		raise RuntimeError(f"CRC8 failed.\nPacket: {packet}\nUnstuffed: {unstuffed}\nCRC8: {unstuffed[-1]}, expected: {crc8.crc8_get(unstuffed[:-1])}")
 	
-	addr = unstuffed[0]
 	itmp_packet = cbor2.loads(unstuffed[1:-1])
-	return [addr, itmp_packet]
+	return itmp_packet
+
+def print_itmp_description_message(message: list):
+	print(f'Topic: "{"\n".join(message[2])}"')
+
+
+def print_itmp_result_message(message: list):
+	print(f'Result: {message[2]}')
+
+def print_itmp_message(message: bytes):
+	decoded = read_itmp_hdlc_packet(message)
+	if (len(message) == 0):
+		return
+
+	if (message[0] >= ITMPMessageType.MAX_TYPE.value):
+		print("SOS!!!!")
+		return
+
+	print(f"Message type: {ITMPMessageType(decoded[0]).name}")
+	print(f"Message id: {decoded[1]}")
+	globals()[f"print_itmp_{ITMPMessageType(decoded[0]).name.lower()}_message"](decoded)

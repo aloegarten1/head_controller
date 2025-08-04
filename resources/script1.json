@@ -4,7 +4,7 @@
         {
             "message_type": "describe",
             "message": 1,
-            "topic": ""
+            "topic": "mot1/go"
         },
         {
             "message_type": "call",
@@ -16,7 +16,13 @@
             "message_type": "call",
             "message": 1,
             "procedure": "mot1/go",
-            "args": [5000, 200, 40]
+            "args": [5000, 300, 40]
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/go",
+            "args": [10000, 800, 60]
         }
     ]
 }

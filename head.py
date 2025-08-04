@@ -27,9 +27,8 @@ def set_port():
 	return ports[port_id]
 
 
-def poll(serial_port):
+def poll(serial_port, timeout=2):
 	buffer = bytes(0)
-	timeout = 2 # secs
 	start = time.time()
 	end = time.time()
 	while (not buffer) and (end - start < timeout):
@@ -44,6 +43,26 @@ def poll(serial_port):
 
 
 def process_all_messages(port: serial.Serial, script: dict):
+	
+	for i in range(len(script["script"])):
+		curr_msg = script["script"][i]
+		msg_type = curr_msg["message_type"]
+		build_func = getattr(itmp_serial, f"build_itmp_hdlc_{msg_type}_packet")
+		curr_msg.pop("message_type")
+		appendix = {"addr": script["addr"]}
+		curr_msg.update(appendix)
+		
+		frame = build_func(**curr_msg)
+		print(f"Sending HDLC frame: {frame} ({len(frame)} bytes)")
+		port.write(frame)
+		
+		res = poll(port, timeout=20)
+		if (res):
+			print("\n~~~~~~~~~ MESSAGE WAS RECIEVED ~~~~~~~~~")
+			itmp_serial.print_itmp_message(res)
+			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
+			time.sleep(15)
+
 	'''
 	for message in script["script"]:
 		curr_msg = script[f"msg{0}"]
@@ -60,18 +79,16 @@ def process_all_messages(port: serial.Serial, script: dict):
 		print(res)
 	'''
 
-	for i in range(len(script["script"])):
-		curr_msg = script["script"][i]
-		msg_type = curr_msg["message_type"]
-		build_func = getattr(itmp_serial, f"build_itmp_hdlc_{msg_type}_packet")
-		curr_msg.pop("message_type")
-		appendix = {"addr": script["addr"]}
-		curr_msg.update(appendix)
+	'''
 
-		frame = build_func(**curr_msg)
-		print(f"Sending HDLC frame: {frame}")
-		print(port.write(frame))
-		res = poll(port)
+		print('TEST')
+		new_frame = b'\x7e\x04\x83\x06\x01\x60\xf7\x7e'
+		print(new_frame.hex())
+		print(type(new_frame))
+		port.write(new_frame)
+		print(poll(port))
+
+	'''
 
 def main():
 	script_path = "./resources/script1.json"
@@ -84,6 +101,7 @@ def main():
 		return
 	
 	port = com.open_serial_port(port_name)
+	port.flush()
 	print(f"Using port: {port_name}")
 
 	with open(script_path, "r") as fin:
