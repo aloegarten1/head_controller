@@ -61,7 +61,9 @@ def process_all_messages(port: serial.Serial, script: dict):
 			print("\n~~~~~~~~~ MESSAGE WAS RECIEVED ~~~~~~~~~")
 			itmp_serial.print_itmp_message(res)
 			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
-			time.sleep(15)
+
+		if (i == 3):
+			time.sleep(6)
 
 	'''
 	for message in script["script"]:
@@ -115,4 +117,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-	

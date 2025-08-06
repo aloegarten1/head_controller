@@ -34,3 +34,5 @@ if ($test_mode -lt 2) {
     Write-Host "Starting main script..."
     python head.py
 }
+
+deactivate

@@ -1,42 +1,7 @@
 import cbor2
-from serial import Serial
 
-from . import hdlc_byte_stuff
-
-from . import crc8
-from enum import Enum
-
-class ITMPMessageType(Enum):
-	# Connection
-	CONNECT = 0
-	CONNECTED = 1
-	DISCONNECT = 4
-
-	# Error
-	ERROR = 5
-
-	# Description
-	DESCRIBE = 6
-	DESCRIPTION = 7
-
-	# RPC
-	CALL = 8
-
-	# Result (Response)
-	RESULT = 9
-
-	# RPC Extended
-	ARGUMENTS = 10
-	PROGRESS = 11
-	CANCEL = 12
-
-	# PubSub
-	EVENT = 13
-	PUBLISH = 14
-	SUBSCRIBE = 16
-	UNSUBSCRIBE = 18
-	
-	MAX_TYPE = 19
+from .utils import hdlc_byte_stuff, crc8
+from . import itmp_message
 
 
 def build_hdlc_from_itmp(addr: int, packet: list):

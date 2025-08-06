@@ -4,7 +4,12 @@
         {
             "message_type": "describe",
             "message": 1,
-            "topic": "mot1/go"
+            "topic": ""
+        },
+        {
+            "message_type": "describe",
+            "message": 1,
+            "topic": "adc/p"
         },
         {
             "message_type": "call",
@@ -16,13 +21,55 @@
             "message_type": "call",
             "message": 1,
             "procedure": "mot1/go",
-            "args": [5000, 300, 40]
+            "args": [-2000, 800, 5000]
         },
         {
             "message_type": "call",
             "message": 1,
-            "procedure": "mot1/go",
-            "args": [10000, 800, 60]
+            "procedure": "mot1/sensor",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/pos",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
         }
     ]
 }
