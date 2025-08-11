@@ -33,8 +33,10 @@ def poll(serial_port, timeout=2):
 	end = time.time()
 	while (not buffer) and (end - start < timeout):
 		print("Listening to COM...")
+		start1 = time.time()
 		buffer = serial_port.read(1024)
 		end = time.time()
+		print(f"EXTRA TEST: {end - start1}")
 	
 	if (end - start > timeout):
 		print("TIMEOUT!")
@@ -54,11 +56,16 @@ def process_all_messages(port: serial.Serial, script: dict):
 		
 		frame = build_func(**curr_msg)
 		print(f"Sending HDLC frame: {frame} ({len(frame)} bytes)")
+		s = time.time()
 		port.write(frame)
+		print(f"WRITE TIME: {time.time() - s}")
 		
+		s1 = time.time()
 		res = poll(port, timeout=20)
+		print(f"POLL TIME: {time.time() - s1}")
 		if (res):
 			print("\n~~~~~~~~~ MESSAGE WAS RECIEVED ~~~~~~~~~")
+			print(f"Packet length: {len(res)}")
 			itmp_serial.print_itmp_message(res)
 			print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 

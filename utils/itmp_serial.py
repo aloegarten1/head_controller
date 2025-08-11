@@ -80,6 +80,7 @@ def print_itmp_description_message(message: list):
 def print_itmp_result_message(message: list):
 	print(f'Result: {message[2]}')
 
+
 def print_itmp_message(message: bytes):
 	decoded = read_itmp_hdlc_packet(message)
 	if (len(message) == 0):
@@ -92,5 +93,3 @@ def print_itmp_message(message: bytes):
 	print(f"Message type: {ITMPMessageType(decoded[0]).name}")
 	print(f"Message id: {decoded[1]}")
 	globals()[f"print_itmp_{ITMPMessageType(decoded[0]).name.lower()}_message"](decoded)
-
-
