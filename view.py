@@ -191,14 +191,14 @@ class WebcamApp:
         self.print_devices(devs)
         head = head_device.HeadDevice("COM4")
         
-        head.mot1_go(300, 1000, 0)
+        head.mot1_go(1500, 1000, 0)
 
         for i in range(700):
-            head.mot1_go(700 + (i + 1) * 10, 1000, 0)
+            head.mot1_go(1500 + (i + 1) * 10, 1000, 0)
             
-            if (self.curr_lapl > 200.0):
-                print("AAAAAAAAAAA")
-                break
+            # if (self.curr_lapl > 100.0):
+            #     print("AAAAAAAAAAA")
+            #     break
 
 
         head.mot1_go(0, 1000, 0)
