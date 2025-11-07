@@ -1,7 +1,9 @@
 import cbor2
+import logging
 
 from .utils import hdlc_byte_stuff, crc8
 from abc import ABC, abstractmethod
+from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Any
 
@@ -41,6 +43,7 @@ class ITMPMessageType(Enum):
 
 class ITMPMessage(ABC):
 	def __init__(self, msg_type: ITMPMessageType, id: int):
+		self.logger = logging.getLogger()
 		self._type = msg_type
 		self._id = id
 
@@ -70,10 +73,10 @@ class ITMPMessage(ABC):
 	@classmethod
 	@abstractmethod
 	def from_list(cls, data: List[Any]) -> 'ITMPMessage':
-		"""Создание объекта сообщения из списка (после десериализации CBOR)."""
+		"""Creates the Message object from ist."""
 		pass
 
-	def to_hdlc(self, address: int = 0x04) -> bytes:
+	def to_hdlc(self, address: int = 0x08) -> bytes:
 		"""Translates ITMP message to HDLC packet."""
 		payload_dict = list(self.to_dict().values())
 		cbor_payload = cbor2.dumps(payload_dict)
@@ -83,25 +86,29 @@ class ITMPMessage(ABC):
 		frame += bytes([crc8.crc8_get(frame)])
 		frame = hdlc_byte_stuff.bytes2hdlc(frame)
 
+		print(f"FRAME: {bytes(frame)}")
+
 		return frame
 
 	@staticmethod
 	def from_hdlc(frame: bytes) -> 'ITMPMessage':
 		"""Build ITMP message from HDLC packet"""
 		if len(frame) < 2 or frame[-1] != 0x7E:
-			raise ValueError("Failed to unpack HDLC frame: wrong packet format.")
+			raise ValueError(f"[{datetime.now()}] ERROR: Failed to unpack HDLC frame: wrong packet format.\n")
 		content = frame[:-1]
 		if (content[0] == 0x7E):
 			content = content[1:]
 
-		if len(content) < 1:
-			raise ValueError(f"HDLC frame is too short ({len(content)} bytes).")
+		if len(content) == 0:
+			raise ValueError(f"[{datetime.now()}] ERROR: HDLC frame is too short ({len(content)} bytes).")
 		
-		if (crc8.crc8_get(content[:-1]) != content[-1]):
-			raise ValueError(f"Failed to unpack HDLC frame: failed CRC ({crc8.crc8_get(content[:-1])} != {content[-1]})")
-
-		escaped_payload = content[1:-1]
-		cbor_payload = ITMPMessage._unescape(escaped_payload)
+		print(f"frame: {frame}")
+		print(f"content: {content}")
+		cbor_payload = ITMPMessage._unescape(content)
+		print(f"cbor payload: {cbor_payload}")
+		if (crc8.crc8_get(cbor_payload[:-1]) != cbor_payload[-1]):
+			raise ValueError(f"[{datetime.now()}] ERROR: Failed to unpack HDLC frame: failed CRC ({crc8.crc8_get(cbor_payload[:-1])} != {cbor_payload[-1]})\nFrame: {frame}")
+		cbor_payload = cbor_payload[1:-1]
 		payload_list = cbor2.loads(cbor_payload)
 		
 

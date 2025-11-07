@@ -1,0 +1,7 @@
+{
+    "logger": {
+        "handler": ""
+
+    },
+    "scipts_path": "./sripts/"
+}

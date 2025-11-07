@@ -1,7 +1,9 @@
 import ctypes
+import logging
 import time
 import win32con
 import win32file
+import pywintypes
 
 
 class COMMTIMEOUTS(ctypes.Structure):
@@ -15,22 +17,26 @@ class COMMTIMEOUTS(ctypes.Structure):
 
 
 class Win32SerialPort:
-    __EV_RXCHAR = 0x0001
-    __EV_RXFLAG = 0x0008
-
     def __init__(self, device_name: str, baudrate: int, read_timeout: float):
+        self.logger = logging.getLogger()
         self.device_path =  f'\\\\.\\{device_name}'
         self.read_timeout_ms = read_timeout
 
-        self.handle = win32file.CreateFile(
-            self.device_path,
-            win32con.GENERIC_READ | win32con.GENERIC_WRITE,
-            0,
-            None,
-            win32con.OPEN_EXISTING,
-            0,
-            None
-        )
+        try:
+            self.handle = win32file.CreateFile(
+                self.device_path,
+                win32con.GENERIC_READ | win32con.GENERIC_WRITE,
+                0,
+                None,
+                win32con.OPEN_EXISTING,
+                0,
+                None
+            )
+        except pywintypes.error:
+            self.logger.log(logging.FATAL, msg=f"Failed to open the COM-port: \"{device_name}\"")
+            raise pywintypes.error(f"Failed to open the COM-port: \"{device_name}\"")
+        
+        self.logger.log(level=logging.DEBUG, msg=f"Serial device was connected successfully. Handle: {self.handle}")
 
         self.__set_DCB(baudrate)
 
@@ -78,8 +84,6 @@ class Win32SerialPort:
         if (tc - ts > self.read_timeout_ms):
             print("TIMEOUT!")
             return bytes([0])
-        if not data:
-            print("EWEWFEWF")
         return data
 
     def close(self):

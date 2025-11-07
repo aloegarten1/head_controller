@@ -1,0 +1,75 @@
+{
+    "addr": 4,
+    "script": [
+        {
+            "message_type": "describe",
+            "message": 1,
+            "topic": ""
+        },
+        {
+            "message_type": "describe",
+            "message": 1,
+            "topic": "adc/p"
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "enable",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/go",
+            "args": [-2000, 800, 5000]
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/sensor",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "mot1/pos",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        },
+        {
+            "message_type": "call",
+            "message": 1,
+            "procedure": "adc/p",
+            "args": []
+        }
+    ]
+}
