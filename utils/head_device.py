@@ -20,18 +20,61 @@ class HeadDevice:
         self._current_pos = 0
 
     def _get_next_id(self) -> int:
-        id_val = self._next_id
-        self._next_id += 1
-        return id_val
+        return 1
 
     def _send_call_and_get_result(self, procedure: str, args: List[int]) -> itmp_message.ITMPMessage:
-        print(f"PROC: {procedure} // ARGS: {args}")
-        msg_id = 1
+        self.logger.log(level=logging.DEBUG, msg=f"PROC: {procedure} // ARGS: {args}")
+        msg_id = self._get_next_id()
         call_msg = itmp_message.ITMPCallMessage(msg_id, procedure, args)
         self.dev.write(call_msg)
         result_msg = self.dev.read()
 
         return result_msg
+    
+    def _calc_mot_delay(self, pos: int, velocity: int, accs: int) -> 0:
+        d_x = abs(pos - self._current_pos)
+        if d_x == 0:
+            return 0
+        
+        if accs == 0:
+            move_time = d_x / velocity
+        else:
+            t_acc = velocity / accs
+            d_acc = (velocity ** 2) / (2 * accs)
+            if d_x <= 2 * d_acc:
+                move_time = 2 * math.sqrt(d_x / accs)
+            else:
+                move_time = 2 * t_acc + (d_x - 2 * d_acc) / velocity
+
+        move_time += 0.08
+        return move_time
+
+    def calc_delay(self, command) -> float:
+        print("COMMAND LOL: ", command)
+        delay_sens = ["mot1/go", "mot2/go"]
+        if not (command[0] in delay_sens):
+            return 0
+        return self._calc_mot_delay(command[1][0], command[1][1], command[1][2])
+    
+    def send_call(
+            self,
+            procedure: str,
+            args: list,
+            delay: float = 0
+    ) -> itmp_message.ITMPResultMessage:
+        msg_id = self._next_id
+
+        commands_list = self.descr("")['description']
+        if not ((procedure + '&') in commands_list):
+            self.logger(level=logging.ERROR, msg=f"Unknown command: {procedure}.")
+            raise Exception(f"Unknown command: {procedure}.")
+        
+        call_msg = itmp_message.ITMPCallMessage(msg_id, procedure, args)
+        self.dev.write(call_msg)
+        time.sleep(delay)
+        print(delay)
+        
+        return self.dev.read()
 
     def adc_p(self) -> List[Any]:
         res = self._send_call_and_get_result("adc/p", [])
@@ -47,7 +90,6 @@ class HeadDevice:
 
     def pwm(self, pwm_id: int, val: int) -> List[Any]:
         res = self._send_call_and_get_result(f"pwm{pwm_id}", [val])
-        print(f"pwm{pwm_id}")
         return res.to_list()[2]
     
     def set_valves(self, valve1: int, valve2: int) -> List[Any]:

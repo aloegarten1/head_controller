@@ -161,10 +161,11 @@ class ITMPCallMessage(ITMPMessage):
 			'arguments': self.arguments
 		}
 
+	"""Creates call message from list. Expected list format: []"""
 	@classmethod
 	def from_list(cls, data: List[Any]) -> 'ITMPCallMessage':
 		if len(data) != 4 or data[0] != ITMPMessageType.CALL.value:
-			raise ValueError("Неверный формат списка для ITMPCallMessage")
+			raise ValueError(f"Wrong message for ITMP message: wrong list size (caught: {len(data)}; expected: 4).")
 		return cls(data[1], data[2], data[3])
 
 	@classmethod

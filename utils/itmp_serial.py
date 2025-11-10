@@ -87,7 +87,6 @@ def print_itmp_message(message: bytes):
 		return
 
 	if (message[0] >= ITMPMessageType.MAX_TYPE.value):
-		print("SOS!!!!")
 		return
 
 	print(f"Message type: {ITMPMessageType(decoded[0]).name}")

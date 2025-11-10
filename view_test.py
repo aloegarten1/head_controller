@@ -192,16 +192,15 @@ class WebcamApp:
         head = head_device.HeadDevice("COM4")
         
         head.mot1_go(1500, 1000, 0)
+        min_p = 1000
 
-        for i in range(700):
-            head.mot1_go(1500 + (i + 1) * 10, 1000, 0)
-            
-            # if (self.curr_lapl > 100.0):
-            #     print("AAAAAAAAAAA")
-            #     break
+        head.set_valves(1, 0)
+        while (min_p > 800):
+            head.mot1_go(20, 700, 0)
+            p = head.adc_p()
+            print(p)
+            min_p = head.adc_p()
 
-
-        head.mot1_go(0, 1000, 0)
     
     def update_gui(self):
         try:

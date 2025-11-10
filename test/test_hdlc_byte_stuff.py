@@ -1,5 +1,5 @@
 import unittest
-from utils import hdlc_byte_stuff
+from utils.itmp.utils import hdlc_byte_stuff
 
 class TestHDLCByteStuff(unittest.TestCase):
     def test_byte_stuff_and_unstuff(self):

@@ -31,10 +31,10 @@ def main():
     print("\nAvailable devices:")
     print_devices(devs)
     head = head_device.HeadDevice("COM4")
-    
 
-    for i in range(100):
-        head.mot1_go((i + 1) * 10, 1000, 0)
+    print(head.descr(""))
+    
+    head.set_valves(1, 0)
 
 
 if __name__ == "__main__":
